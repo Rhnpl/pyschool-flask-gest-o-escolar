@@ -1,0 +1,34 @@
+{% extends 'template.html' %}{% block conteudo %}
+    <div class="container">
+        <h1 style="text-align: center;">Cadastro de Usuario</h1>
+        <form action="/novousuario" method="post">
+            <div class="form-group">
+                <label for="nome">Nome:</label>
+                <input type="text" name="nome" id="nome" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="text" name="email" id="email" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="senha">Senha:</label>
+                <input type="text" name="senha" id="senha" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="funcao" class="form-label fw-semibold">Função:</label>
+                    <select name="funcao" id="funcao" class="form-select form-select-lg rounded-3 shadow-sm" required>
+                        <option selected disabled>Selecione a Função</option>
+                        <option value="admin">Admin</option>
+                        <option value="diretor">Diretor</option>
+                        <option value="cordernador">Cordenador</option>
+                        <option value="professor">Professor</option>
+                        <option value="aluno">Aluno</option>
+                    </select>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-salvar">Criar</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
