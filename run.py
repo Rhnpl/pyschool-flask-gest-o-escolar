@@ -35,7 +35,7 @@ def criar():
     
     verificar = Usuario.query.filter_by(nome=usuario_logado).first()
 
-    if verificar and verificar.funcao == 'Admin' or 'Diretor' or 'Cordenador':
+    if verificar and verificar.funcao in ['admin', 'diretor', 'cordenador']:
         return render_template('criar.html')
     else:
         flash('Você não tem permissão para acessar')
@@ -51,14 +51,14 @@ def usuarios():
     
     verificar = Usuario.query.filter_by(nome=usuario_logado).first()
 
-    if verificar and verificar.funcao == 'Admin' or 'Diretor' or 'Cordenador':
+    if verificar and verificar.funcao == 'admin' or 'diretor' or 'cordenador':
         usuarios = db.session.query(Usuario).all()
         return render_template('usuarios.html', usuarios=usuarios)
     else:
         flash('Você não tem permissão para acessar')
         return redirect(url_for('index'))
     
-@app.route('/novousuario')
+@app.route('/novousuario', methods=['POST'])
 def novousuario():
     nome = request.form['nome']
     email = request.form['email']
@@ -66,16 +66,16 @@ def novousuario():
     funcao = request.form['funcao']
     usuario = Usuario(nome, email, senha, funcao)
 
-    if not usuario or email or senha or funcao:
+    if not nome or not email or not senha or not funcao:
         flash('Todos os campos são obrigatórios!')
-        return redirect(url_for('novocurso'))
+        return redirect(url_for('criar'))
     else:
         db.session.add(usuario)
         db.session.commit()
         return redirect(url_for('usuarios'))
 
     
-@app.route('/editar/<int:id>')
+@app.route('/editar/<int:id>', methods=['GET', 'POST'])
 def editar(id):
     usuario_logado = session.get('Usuario_Logado')
     usuario = Usuario.query.get_or_404(id)
@@ -85,20 +85,25 @@ def editar(id):
     
     verificar = Usuario.query.filter_by(nome=usuario_logado).first()
 
-    if verificar and verificar.funcao == 'Admin' or 'Diretor' or 'Cordenador':
+    if verificar and verificar.funcao in ['admin', 'diretor', 'cordenador']:
         if request.method == 'POST':
             usuario.nome = request.form['nome']
             usuario.email = request.form['email']
             usuario.senha = request.form['senha']
             usuario.funcao = request.form['funcao']
             usuario.ativo = request.form['ativo']
+
+            ativo_str = request.form.get('ativo')
+            usuario.ativo = ativo_str == 'True'
+
             db.session.commit()
-        return render_template('editar.html', usuario=verificar)
+            return redirect(url_for('usuarios'))
+        return render_template('editar.html', usuario=usuario)
     else:
         flash('Você não tem permissão para acessar')
         return redirect(url_for('index'))
     
-@app.route('/deletar/<int:id>')
+@app.route('/deletar/<int:id>', methods=['GET', 'POST'])
 def deletar(id):
     usuario_logado = session.get('Usuario_Logado')
     if not usuario_logado:
@@ -108,9 +113,10 @@ def deletar(id):
     verificar = Usuario.query.filter_by(nome=usuario_logado).first()
     usuario = Usuario.query.get_or_404(id)
 
-    if verificar and verificar.funcao == 'Admin' or 'Diretor' or 'Cordenador':
-        db.session.delete(id)
+    if verificar and verificar.funcao in ['admin', 'diretor', 'cordenador']:
+        db.session.delete(usuario)
         db.session.commit()
+        return redirect(url_for('usuarios'))
     else:
         flash('Você não tem permissão para acessar')
         return redirect(url_for('index'))

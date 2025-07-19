@@ -27,12 +27,8 @@
                 <td>{{ usuario.senha }}</td>
                 <td>{{ usuario.funcao }}</td>
                 <td>{{ usuario.ativo }}</td>
-                <td><form action="/editar/{{ usuario.id }}">
-                    <button type="submit" class="btn btn-primary btn-salvar">Editar</button>
-                </form></td>
-                <td><form action="/deletar/{{ usuario.id }}" method="post" style="display: inline;">
-                    <button type="submit" class="btn btn-danger btn-salvar">Excluir</button>
-                </form></td>
+                <td><a href="{{ url_for('editar', id=usuario.id) }}" class="btn btn-primary btn-salvar">Editar</a></td>
+                <td><a href="{{ url_for('deletar', id=usuario.id) }}" class="btn btn-danger btn-salvar">Deletar</a></td>
             </tbody>
             {% endfor %}
         </table>

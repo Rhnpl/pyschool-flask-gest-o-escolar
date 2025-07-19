@@ -4,8 +4,10 @@
     </div>
 
     <div>
+        {% if not session['Usuario_Logado'] %}
         <form action="/login" style="text-align: right;">
             <button type="submit" class="btn btn-primary btn-salvar">Login</button>
         </form>
+        {% endif %}
     </div>
 {% endblock %}
